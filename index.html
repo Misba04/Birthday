@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>Birthday Surprise 🎂</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:cursive;
+}
+
+body{
+overflow:hidden;
+height:100vh;
+background:radial-gradient(circle,#ffdff1,#dff6ff);
+position:relative;
+}
+
+.bg{
+position:absolute;
+width:100%;
+height:100%;
+overflow:hidden;
+}
+
+.float{
+position:absolute;
+left:50%;
+top:50%;
+font-size:34px;
+animation:fly 13s linear infinite;
+}
+
+@keyframes fly{
+0%{transform:translate(0,0) scale(.2);opacity:1;}
+100%{transform:translate(var(--x),var(--y)) rotate(360deg) scale(1.4);opacity:0;}
+}
+
+.chat{
+position:absolute;
+top:14%;
+width:100%;
+text-align:center;
+font-size:38px;
+font-style:italic;
+font-weight:bold;
+color:#ffffff;
+text-shadow:0 0 30px #ff4fb5;
+z-index:50;
+}
+
+.buttons{
+position:absolute;
+bottom:100px;
+width:100%;
+display:flex;
+justify-content:center;
+gap:20px;
+z-index:100;
+}
+
+button{
+padding:18px 35px;
+border:none;
+border-radius:60px;
+font-size:18px;
+cursor:pointer;
+color:white;
+transition:.5s;
+}
+
+button:hover{transform:scale(1.15);}
+
+#cake{
+position:absolute;
+left:50%;
+bottom:10px;
+transform:translateX(-50%);
+display:flex;
+flex-direction:column;
+align-items:center;
+z-index:80;
+}
+
+.layer{
+width:320px;
+height:38px;
+background:#b68c8c;
+border-radius:12px;
+margin-top:3px;
+}
+
+.cream{
+width:340px;
+height:50px;
+background:#fff8ed;
+border-radius:25px;
+margin-bottom:-10px;
+}
+
+.candle{
+width:14px;
+height:90px;
+background:white;
+border-radius:20px;
+position:relative;
+}
+
+.flame{
+position:absolute;
+top:-25px;
+left:-4px;
+width:22px;
+height:35px;
+background:gold;
+border-radius:50%;
+box-shadow:0 0 80px yellow;
+animation:fire .6s infinite;
+}
+
+@keyframes fire{
+50%{transform:scale(1.2);}
+}
+
+.frame{
+position:absolute;
+left:50%;
+top:48%;
+transform:translate(-50%,-50%);
+width:100%;
+height:100%;
+border-radius:0;
+display:none;
+z-index:20;
+overflow:hidden;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="bg" id="bg"></div>
+<div class="frame" id="frame"></div>
+
+<audio id="music">
+<source src="https://www.orangefreesounds.com/wp-content/uploads/2021/04/Happy-birthday-song-played-on-kids-synthesizer.mp3">
+</audio>
+
+<div id="chat" class="chat"></div>
+<div id="buttons" class="buttons"></div>
+<div id="cake"></div>
+
+<script>
+
+const bg=document.getElementById("bg")
+const frame=document.getElementById("frame")
+const chat=document.getElementById("chat")
+const buttons=document.getElementById("buttons")
+const cake=document.getElementById("cake")
+const music=document.getElementById("music")
+
+function wait(t){
+return new Promise(r=>setTimeout(r,t))
+}
+
+function bgItems(){
+let e=["💗","🎂","🎁","🎉","✨"]
+setInterval(()=>{
+let x=document.createElement("div")
+x.className="float"
+x.innerHTML=e[Math.floor(Math.random()*e.length)]
+x.style.setProperty("--x",Math.random()*1800-900+"px")
+x.style.setProperty("--y",Math.random()*1200-600+"px")
+bg.appendChild(x)
+setTimeout(()=>x.remove(),13000)
+},180)
+}
+bgItems()
+
+async function type(msg){
+chat.innerHTML=""
+for(let i=0;i<msg.length;i++){
+chat.innerHTML+=msg[i]
+await wait(65)
+}
+}
+
+function btn(name){
+let b=document.createElement("button")
+b.innerHTML=name
+b.style.background=["#ff4fa8","#7a5cff","#ff914d","#00c7a7"][Math.floor(Math.random()*4)]
+buttons.appendChild(b)
+return b
+}
+
+function clearBtn(){
+buttons.innerHTML=""
+}
+
+function buildCake(){
+cake.innerHTML=""
+music.play()
+
+cake.innerHTML+=`
+<div class="candle"><div class="flame"></div></div>
+<div class="cream"></div>
+`
+for(let i=0;i<3;i++){
+setTimeout(()=>{
+let l=document.createElement("div")
+l.className="layer"
+cake.appendChild(l)
+},2000+i*500)
+}
+}
+
+/* ✅ FIXED SCENE WITH VIDEO */
+function birthdayScene(){
+
+cake.innerHTML=""
+chat.innerHTML=""
+buttons.innerHTML=""
+bg.style.display="none"
+
+frame.style.display="block"
+
+frame.innerHTML=`
+
+<!-- 🌊 SEA VIDEO -->
+<video id="sea" autoplay muted loop>
+<source src="https://media.istockphoto.com/id/1194337503/video/aerial-view-of-clear-turquoise-sea-and-waves.mp4" type="video/mp4">
+</video>
+
+<div id="overlay"></div>
+
+<!-- 🕊️ PIGEON VIDEO -->
+<video id="pigeon" autoplay muted loop>
+<source src="https://cdn.pixabay.com/video/2023/10/12/189356-873774731_large.mp4" type="video/mp4">
+</video>
+
+<div id="msg">HAPPY<br>BIRTHDAY</div>
+
+`
+
+let style=document.createElement("style")
+
+style.innerHTML=`
+
+#sea{
+position:absolute;
+width:100%;
+height:100%;
+object-fit:cover;
+z-index:0;
+}
+
+#overlay{
+position:absolute;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.25);
+z-index:1;
+}
+
+#msg{
+position:absolute;
+top:40%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:70px;
+color:white;
+z-index:2;
+text-align:center;
+text-shadow:0 0 20px #fff;
+}
+
+#pigeon{
+position:absolute;
+bottom:20px;
+left:-200px;
+width:180px;
+z-index:3;
+animation:fly 7s linear forwards;
+}
+
+@keyframes fly{
+0%{left:-200px; bottom:20px;}
+100%{left:110%; bottom:80%;}
+}
+
+`
+
+document.head.appendChild(style)
+
+}
+
+async function start(){
+
+let a=btn("Start 🎉")
+await new Promise(r=>a.onclick=r)
+clearBtn()
+
+await type("✨ Happy Birthday Surprise Loading...")
+await wait(1000)
+
+buildCake()
+await wait(4000)
+
+birthdayScene()
+
+}
+
+start()
+
+</script>
+
+</body>
+</html>
